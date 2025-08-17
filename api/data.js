@@ -1,19 +1,22 @@
-import fs from 'fs';
-import path from 'path';
+import { Redis } from '@upstash/redis';
 
-export default function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL,
+  token: process.env.KV_REST_API_TOKEN,
+});
 
+export default async function handler(req, res) {
   try {
-    const filePath = path.join(process.cwd(), 'data', 'nilais.json');
-    const raw = fs.readFileSync(filePath, 'utf-8');
-    const data = JSON.parse(raw);
+    // Ambil nilai awal
+    let nilai = await redis.get('nilai_awal');
+    if (nilai === null) {
+      nilai = 10000; // default kalau belum ada
+      await redis.set('nilai_awal', nilai);
+    }
 
-    res.status(200).json(data);
+    res.status(200).json({ nilai_awal: nilai });
   } catch (err) {
-    console.error("API /api/data error:", err);
-    res.status(500).json({ error: "Gagal membaca nilai" });
+    console.error(err);
+    res.status(500).json({ error: 'Gagal memuat nilai' });
   }
-}
+  }
