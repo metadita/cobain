@@ -2,42 +2,64 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Acak Kurangi Nilai (JSON Update)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Nilai</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #nilai {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <h1>Random Kurangi Nilai dari JSON</h1>
-  <p id="hasil">Memuat...</p>
-  <button onclick="proses()">Acak dan Hitung</button>
+  <h1>Game Nilai</h1>
+  <p id="nilai">Memuat...</p>
+  <button id="kurangiBtn">Kurangi Nilai</button>
 
   <script>
-    async function tampilkanNilai() {
+    async function muatNilai() {
       try {
-        const res = await fetch('/api/data');
+        const res = await fetch("/api/data");
         const data = await res.json();
-        document.getElementById('hasil').innerText = 
-          `Nilai sekarang: ${data.nilai_awal}`;
+        if (res.ok) {
+          document.getElementById("nilai").innerText = "Nilai saat ini: " + data.nilai_awal;
+        } else {
+          document.getElementById("nilai").innerText = "GAGAL MEMUAT NILAI";
+        }
       } catch (err) {
-        document.getElementById('hasil').innerText = "Gagal memuat nilai.";
-        console.error(err);
+        document.getElementById("nilai").innerText = "GAGAL MEMUAT NILAI";
       }
     }
 
-    async function proses() {
+    async function kurangiNilai() {
       try {
-        const res = await fetch('/api/kurangi', { 
-          method: 'POST',
-          headers: { "Content-Type": "application/json" }
-        });
+        const res = await fetch("/api/kurangi", { method: "POST" });
         const data = await res.json();
-        document.getElementById('hasil').innerText = 
-          `Nilai dikurangi: ${data.randomKurang}\nNilai sekarang: ${data.nilai_awal}`;
+        if (res.ok) {
+          document.getElementById("nilai").innerText = "Nilai saat ini: " + data.nilai_awal + " (berkurang " + data.randomKurang + ")";
+        } else {
+          alert("Gagal memproses nilai!");
+        }
       } catch (err) {
-        document.getElementById('hasil').innerText = "Gagal memproses nilai.";
-        console.error(err);
+        alert("Gagal memproses nilai!");
       }
     }
 
-    tampilkanNilai();
+    document.getElementById("kurangiBtn").addEventListener("click", kurangiNilai);
+
+    // pertama kali load
+    muatNilai();
   </script>
 </body>
 </html>
