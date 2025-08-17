@@ -12,7 +12,7 @@
     <script>
     async function tampilkanNilai() {
         try {
-            const res = await fetch('/api/nilais');
+            const res = await fetch('/api/data');
             const data = await res.json();
             document.getElementById('hasil').innerText = `Nilai sekarang: ${data.nilai_awal}`;
         } catch (err) {
