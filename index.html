@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Acak Kurangi Nilai (JSON Update)</title>
+</head>
+<body>
+    <h1>Random Kurangi Nilai dari JSON</h1>
+    <p id="hasil">Memuat...</p>
+    <button onclick="proses()">Acak dan Hitung</button>
+
+    <script>
+    async function tampilkanNilai() {
+        const res = await fetch('/api/data');
+        const data = await res.json();
+        document.getElementById('hasil').innerText = `Nilai sekarang: ${data.nilai_awal}`;
+    }
+
+    async function proses() {
+        const res = await fetch('/api/kurangi', {method: 'POST'});
+        const data = await res.json();
+        document.getElementById('hasil').innerText = 
+            `Nilai dikurangi: ${data.randomKurang}\nNilai sekarang: ${data.nilai_awal}`;
+    }
+
+    tampilkanNilai();
+    </script>
+</body>
+</html>
