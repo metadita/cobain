@@ -1,24 +1,23 @@
-import fs from 'fs';
-import path from 'path';
+import { Redis } from '@upstash/redis';
 
-export default function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL,
+  token: process.env.KV_REST_API_TOKEN,
+});
 
+export default async function handler(req, res) {
   try {
-    const filePath = path.join(process.cwd(), 'data', 'nilais.json');
-    const raw = fs.readFileSync(filePath, 'utf-8');
-    let data = JSON.parse(raw);
+    let nilai = await redis.get('nilai_awal');
+    if (nilai === null) nilai = 10000;
 
     const randomKurang = Math.floor(Math.random() * 100) + 1;
-    data.nilai_awal -= randomKurang;
+    nilai = Math.max(0, nilai - randomKurang); // jangan sampai minus
 
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    await redis.set('nilai_awal', nilai);
 
-    return res.status(200).json({ nilai_awal: data.nilai_awal, randomKurang });
+    res.status(200).json({ nilai_awal: nilai, randomKurang });
   } catch (err) {
-    console.error("API /api/kurangi error:", err);
-    return res.status(500).json({ error: "Gagal memproses nilai" });
+    console.error(err);
+    res.status(500).json({ error: 'Gagal memproses nilai' });
   }
 }
