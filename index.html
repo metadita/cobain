@@ -11,14 +11,14 @@
 
     <script>
     async function tampilkanNilai() {
-        const res = await fetch('/api/data');
-        const nilais = await res.json();
+        const res = await fetch('/api/nilais');
+        const data = await res.json();
         document.getElementById('hasil').innerText = `Nilai sekarang: ${data.nilai_awal}`;
     }
 
     async function proses() {
         const res = await fetch('/api/kurangi', {method: 'POST'});
-        const nilais = await res.json();
+        const data = await res.json();
         document.getElementById('hasil').innerText = 
             `Nilai dikurangi: ${data.randomKurang}\nNilai sekarang: ${data.nilai_awal}`;
     }
