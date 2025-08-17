@@ -1,39 +1,43 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>Acak Kurangi Nilai (JSON Update)</title>
+  <meta charset="UTF-8">
+  <title>Acak Kurangi Nilai (JSON Update)</title>
 </head>
 <body>
-    <h1>Random Kurangi Nilai dari JSON</h1>
-    <p id="hasil">Memuat...</p>
-    <button onclick="proses()">Acak dan Hitung</button>
+  <h1>Random Kurangi Nilai dari JSON</h1>
+  <p id="hasil">Memuat...</p>
+  <button onclick="proses()">Acak dan Hitung</button>
 
-    <script>
+  <script>
     async function tampilkanNilai() {
-        try {
-            const res = await fetch('/api/data');
-            const data = await res.json();
-            document.getElementById('hasil').innerText = `Nilai sekarang: ${data.nilai_awal}`;
-        } catch (err) {
-            document.getElementById('hasil').innerText = "Gagal memuat nilai.";
-            console.error(err);
-        }
+      try {
+        const res = await fetch('/api/data');
+        const data = await res.json();
+        document.getElementById('hasil').innerText = 
+          `Nilai sekarang: ${data.nilai_awal}`;
+      } catch (err) {
+        document.getElementById('hasil').innerText = "Gagal memuat nilai.";
+        console.error(err);
+      }
     }
 
     async function proses() {
-        try {
-            const res = await fetch('/api/kurangi', { method: 'POST' });
-            const data = await res.json();
-            document.getElementById('hasil').innerText =
-                `Nilai dikurangi: ${data.randomKurang}\nNilai sekarang: ${data.nilai_awal}`;
-        } catch (err) {
-            document.getElementById('hasil').innerText = "Gagal memproses nilai.";
-            console.error(err);
-        }
+      try {
+        const res = await fetch('/api/kurangi', { 
+          method: 'POST',
+          headers: { "Content-Type": "application/json" }
+        });
+        const data = await res.json();
+        document.getElementById('hasil').innerText = 
+          `Nilai dikurangi: ${data.randomKurang}\nNilai sekarang: ${data.nilai_awal}`;
+      } catch (err) {
+        document.getElementById('hasil').innerText = "Gagal memproses nilai.";
+        console.error(err);
+      }
     }
 
     tampilkanNilai();
-    </script>
+  </script>
 </body>
 </html>
