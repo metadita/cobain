@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 export default function handler(req, res) {
-  const filePath = path.join(process.cwd(), 'api', 'nilais.json');
+  const filePath = path.join(process.cwd(), 'data', 'nilais.json');
   let data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
   const randomKurang = Math.floor(Math.random() * 100) + 1;
   data.nilai_awal -= randomKurang;
